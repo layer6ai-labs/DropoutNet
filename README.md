@@ -5,7 +5,8 @@ python + tensorflow implementation of DropoutNet paper from NIPS 2017
 0. [Introduction](#intro)  
 1. [Environment](#env)
 2. [Dataset](#dataset)
-3. [Running the Demo](#demo)
+3. [Training](#demo)
+3. [Notes](#notes)
 
 <a name="intro"/>
 
@@ -30,6 +31,8 @@ The code runs on the [ACM RecSys 2017 challenge dataset](http://2017.recsyschall
 To run the demo, download the dataset from [here](https://s3.amazonaws.com/public.layer6.ai/DropoutNet/recsys2017.pub.tar.gz)
 In this dataset, we have trained a simple WMF model, whose performance is outlined in the paper. The model gives competitive results on the warm dataset but near random results on the cold user or item sets. These are compressed in binary form for convenience.
 
+<a name="demo"/>
+
 ## Running training code
 
 1. Download dataset above, extract and keep the directory structures.
@@ -43,5 +46,7 @@ In this dataset, we have trained a simple WMF model, whose performance is outlin
   
 3. Runing the main script will start training.
 4. (Optionally) launch tensorboard to monitor progress by `tensorboard --logdir=/datadrive/tmp/citeu.tf.log`
+
+<a name="notes"/>
 
 ## Notes
