@@ -2,6 +2,7 @@ import time
 import datetime
 import numpy as np
 import scipy
+import tensorflow as tf
 from sklearn import preprocessing as prep
 
 
@@ -77,3 +78,33 @@ def prep_standardize_dense(x):
     x_scaled[x_scaled < -5] = -5
     x_scaled[np.absolute(x_scaled) < 1e-5] = 0
     return scaler, x_scaled
+
+
+def batch_eval_recall(_sess, tf_eval, eval_feed_dict, recall_k, eval_data):
+    tf_eval_preds_batch = []
+    for (batch, (eval_start, eval_stop)) in enumerate(eval_data.eval_batch):
+        tf_eval_preds = _sess.run(tf_eval,
+                                  feed_dict=eval_feed_dict(
+                                      batch, eval_start, eval_stop, eval_data))
+        tf_eval_preds_batch.append(tf_eval_preds)
+    tf_eval_preds = np.concatenate(tf_eval_preds_batch)
+    tf.local_variables_initializer().run()
+
+    # filter non-zero targets
+    y_nz = [len(x) > 0 for x in eval_data.R_test_inf.rows]
+    y_nz = np.arange(len(eval_data.R_test_inf.rows))[y_nz]
+
+    preds_all = tf_eval_preds[y_nz, :]
+
+    recall = []
+    for at_k in recall_k:
+        preds_k = preds_all[:, :at_k]
+        y = eval_data.R_test_inf[y_nz, :]
+
+        x = scipy.sparse.lil_matrix(y.shape)
+        x.rows = preds_k
+        x.data = np.ones_like(preds_k)
+
+        z = y.multiply(x)
+        recall.append(np.mean(np.divide((np.sum(z, 1)), np.sum(y, 1))))
+    return recall
