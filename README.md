@@ -20,6 +20,7 @@ The python code is developed and tested on the following environment:
 * python 2.7
 * tensorflow-gpu 1.3.0
 * Intel Xeon E5-2630
+* 128 GB ram (need about 50)
 * Titan X (Pascal) 12gb, driver ver. 384.81
 
 <a name="dataset"/>
@@ -44,6 +45,14 @@ In this dataset, we have trained a simple WMF model, whose performance is outlin
     * default setting uses gpu for training and cpu for inference
 3. (Optionally) launch tensorboard to monitor progress by `tensorboard --logdir=<log_path>`
 
+the output is evaluation of recall at 50,100,...,500 for:
+- warm
+- cold user
+- cold item
+
 <a name="notes"/>
 
 ## Notes
+
+* Make sure `--data-dir` points to the `eval/` folder, not the root
+* On the machine outlined above, 2 full user batch (50,000 batches with 100 updates each) takes about 14 minutes, reaching approximately 0.45 recall@500 for warm, and 0.30 for both cold user and cold item.
