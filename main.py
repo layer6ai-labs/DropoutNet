@@ -20,16 +20,16 @@ def main():
     tb_log_path = args.tb_log_path
     model_select = args.model_select
 
-    _rank_out = args.rank
-    _ubatch_size = 1000
-    _nscores_user = 2500
-    _dbatch_size = 100
-    _deepcf_dropout = args.dropout
-    _recall_at = range(50, 550, 50)
-    _eval_batch_size = 1000
-    _max_data_per_step = 2500000
-    _eval_every = args.eval_every
-    _num_epoch = 10
+    rank_out = args.rank
+    user_batch_size = 1000
+    n_scores_user = 2500
+    data_batch_size = 100
+    dropout = args.dropout
+    recall_at = range(50, 550, 50)
+    eval_batch_size = 1000
+    max_data_per_step = 2500000
+    eval_every = args.eval_every
+    num_epoch = 10
 
     _lr = args.lr
     _decay_lr_every = 50
@@ -65,7 +65,7 @@ def main():
     timer.toc('initialized numpy data for tf')
 
     # prep eval
-    eval_batch_size = _eval_batch_size
+    eval_batch_size = eval_batch_size
     timer.tic()
     eval_warm.init_tf(u_pref_scaled, v_pref_scaled, user_content, item_content, eval_batch_size)
     timer.toc('initialized eval_warm for tf').tic()
@@ -78,7 +78,7 @@ def main():
                                user_content_rank=user_content.shape[1],
                                item_content_rank=item_content.shape[1],
                                model_select=model_select,
-                               rank_out=_rank_out)
+                               rank_out=rank_out)
 
     config = tf.ConfigProto(allow_soft_placement=True)
 
@@ -86,7 +86,7 @@ def main():
         dropout_net.build_model()
 
     with tf.device(args.inf_device):
-        dropout_net.build_predictor(_recall_at, _nscores_user)
+        dropout_net.build_predictor(recall_at, n_scores_user)
 
     with tf.Session(config=config) as sess:
         tf_saver = None if _tf_ckpt_file is None else tf.train.Saver()
@@ -103,14 +103,14 @@ def main():
         best_warm = 0
         n_batch_trained = 0
         best_step = 0
-        for epoch in range(_num_epoch):
+        for epoch in range(num_epoch):
             np.random.shuffle(row_index)
-            for b in utils.batch(row_index, _ubatch_size):
+            for b in utils.batch(row_index, user_batch_size):
                 n_step += 1
                 # prep targets
-                target_users = np.repeat(b, _nscores_user)
-                target_users_rand = np.repeat(np.arange(len(b)), _nscores_user)
-                target_items_rand = [np.random.choice(v_pref.shape[0], _nscores_user) for _ in b]
+                target_users = np.repeat(b, n_scores_user)
+                target_users_rand = np.repeat(np.arange(len(b)), n_scores_user)
+                target_items_rand = [np.random.choice(v_pref.shape[0], n_scores_user) for _ in b]
                 target_items_rand = np.array(target_items_rand).flatten()
                 target_ui_rand = np.transpose(np.vstack([target_users_rand, target_items_rand]))
                 [target_scores, target_items, random_scores] = sess.run(
@@ -129,30 +129,30 @@ def main():
                 tf.local_variables_initializer().run()
                 n_targets = len(target_scores)
                 perm = np.random.permutation(n_targets)
-                n_targets = min(n_targets, _max_data_per_step)
-                dbatch = [(n, min(n + _dbatch_size, n_targets)) for n in xrange(0, n_targets, _dbatch_size)]
+                n_targets = min(n_targets, max_data_per_step)
+                data_batch = [(n, min(n + data_batch_size, n_targets)) for n in xrange(0, n_targets, data_batch_size)]
                 f_batch = 0
-                for (start, stop) in dbatch:
+                for (start, stop) in data_batch:
                     batch_perm = perm[start:stop]
                     batch_users = target_users[batch_perm]
                     batch_items = target_items[batch_perm]
-                    if _deepcf_dropout != 0:
-                        n_to_drop = int(np.floor(_deepcf_dropout * len(batch_perm)))
+                    if dropout != 0:
+                        n_to_drop = int(np.floor(dropout * len(batch_perm)))
                         perm_user = np.random.permutation(len(batch_perm))[:n_to_drop]
                         perm_item = np.random.permutation(len(batch_perm))[:n_to_drop]
-                        dbatch_v_pref = np.copy(batch_items)
-                        dbatch_u_pref = np.copy(batch_users)
-                        dbatch_v_pref[perm_user] = v_pref_last
-                        dbatch_u_pref[perm_item] = u_pref_last
+                        batch_v_pref = np.copy(batch_items)
+                        batch_u_pref = np.copy(batch_users)
+                        batch_v_pref[perm_user] = v_pref_last
+                        batch_u_pref[perm_item] = u_pref_last
                     else:
-                        dbatch_v_pref = batch_items
-                        dbatch_u_pref = batch_users
+                        batch_v_pref = batch_items
+                        batch_u_pref = batch_users
 
-                    preds_out, _, loss_out = sess.run(
+                    _, _, loss_out = sess.run(
                         [dropout_net.preds, dropout_net.updates, dropout_net.loss],
                         feed_dict={
-                            dropout_net.Uin: u_pref_expanded[dbatch_u_pref, :],
-                            dropout_net.Vin: v_pref_expanded[dbatch_v_pref, :],
+                            dropout_net.Uin: u_pref_expanded[batch_u_pref, :],
+                            dropout_net.Vin: v_pref_expanded[batch_v_pref, :],
                             dropout_net.Ucontent: user_content[batch_users, :].todense(),
                             dropout_net.Vcontent: item_content[batch_items, :].todense(),
                             #
@@ -165,22 +165,22 @@ def main():
                     if np.isnan(f_batch):
                         raise Exception('f is nan')
 
-                n_batch_trained += len(dbatch)
+                n_batch_trained += len(data_batch)
                 if n_step % _decay_lr_every == 0:
                     _lr = _lr_decay * _lr
                     print('decayed lr:' + str(_lr))
-                if n_step % _eval_every == 0:
+                if n_step % eval_every == 0:
                     recall_warm = utils.batch_eval_recall(
                         sess, dropout_net.eval_preds_warm, eval_feed_dict=dropout_net.get_eval_dict,
-                        recall_k=_recall_at, eval_data=eval_warm)
+                        recall_k=recall_at, eval_data=eval_warm)
                     recall_cold_user = utils.batch_eval_recall(
                         sess, dropout_net.eval_preds_cold,
                         eval_feed_dict=dropout_net.get_eval_dict,
-                        recall_k=_recall_at, eval_data=eval_cold_user)
+                        recall_k=recall_at, eval_data=eval_cold_user)
                     recall_cold_item = utils.batch_eval_recall(
                         sess, dropout_net.eval_preds_cold,
                         eval_feed_dict=dropout_net.get_eval_dict,
-                        recall_k=_recall_at, eval_data=eval_cold_item)
+                        recall_k=recall_at, eval_data=eval_cold_item)
 
                     # checkpoint
                     if tf_saver is not None and np.sum(recall_warm + recall_cold_user + recall_cold_item) > np.sum(
@@ -192,7 +192,7 @@ def main():
                         tf_saver.save(sess, _tf_ckpt_file)
 
                     timer.toc('%d [%d]b [%d]tot f=%.2f best[%d]' % (
-                        n_step, len(dbatch), n_batch_trained, f_batch, best_step
+                        n_step, len(data_batch), n_batch_trained, f_batch, best_step
                     )).tic()
                     print('\t%s\n\t%s\n\t%s' % (
                         ' '.join(['%.4f' % i for i in recall_warm]),
@@ -200,7 +200,7 @@ def main():
                         ' '.join(['%.4f' % i for i in recall_cold_item])
                     ))
                     summaries = []
-                    for i, k in enumerate(_recall_at):
+                    for i, k in enumerate(recall_at):
                         if k % 100 == 0:
                             summaries.extend([
                                 tf.Summary.Value(tag="recall@" + str(k) + " warm", simple_value=recall_warm[i]),
