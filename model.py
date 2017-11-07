@@ -1,5 +1,6 @@
 import tensorflow as tf
 
+
 def dense_batch_fc_tanh(x, units, phase, scope, do_norm=False):
     """
     convenience function to build tanh blocks in DeepCF
@@ -18,7 +19,6 @@ def dense_batch_fc_tanh(x, units, phase, scope, do_norm=False):
         h1_w = tf.get_variable(scope + '_w',
                                shape=[x.get_shape().as_list()[1], units],
                                initializer=init)
-        # h1_b = tf.Variable(tf.zeros([1, units]), name=scope + '_b')
         h1_b = tf.get_variable(scope + '_b',
                                shape=[1, units],
                                initializer=tf.zeros_initializer())

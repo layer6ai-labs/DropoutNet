@@ -1,10 +1,62 @@
 import numpy as np
 import tensorflow as tf
 import scipy.sparse
+import utils
+import pandas as pd
+
+"""
+This module contains class and methods related to data used in DropoutNet  
+"""
+
+
+def load_eval_data(test_file, test_id_file, name, cold, train_data):
+    timer = utils.timer()
+    with open(test_id_file) as f:
+        test_item_ids = [int(line) for line in f]
+        test_data = pd.read_csv(test_file, delimiter=",", header=-1, dtype=np.int32).values.ravel().view(
+            dtype=[('uid', np.int32), ('iid', np.int32), ('inter', np.int32), ('date', np.int32)])
+        timer.toc('read %s triplets %s' % (name, test_data.shape)).tic()
+        eval_data = EvalData(
+            test_data,
+            test_item_ids,
+            is_cold=cold,
+            train=train_data
+        )
+        timer.toc('loaded %s' % name).tic()
+        print(eval_data.get_stats_string())
+        return eval_data
 
 
 class EvalData:
-    def __init__(self, _test_triplets, _test_item_ids, is_cold, train):
+    """
+    EvalData:
+        EvalData packages test triplet (user, item, score) into appropriate formats for evaluation
+
+        Compact Indices:
+            Specifically, this builds compact indices and stores mapping between original and compact indices.
+            Compact indices only contains:
+                1) items in test set
+                2) users who interacted with such test items
+            These compact indices speed up testing significantly by ignoring irrelevant users or items
+
+        Args:
+            test_triplets(int triplets): user-item-interaction_value triplet to build the test data
+            train(int triplets): user-item-interaction_value triplet from train data
+
+        Attributes:
+            is_cold(boolean): whether test data is used for cold start problem
+            test_item_ids(list of int): maps compressed item ids to original item ids (via position)
+            test_item_ids_map(dictionary of int->int): maps original item ids to compressed item ids
+            test_user_ids(list of int): maps compressed user ids to original user ids (via position)
+            test_user_ids_map(dictionary of int->int): maps original user ids to compressed user ids
+            R_test_inf(scipy lil matrix): pre-built compressed test matrix
+            R_train_inf(scipy lil matrix): pre-built compressed train matrix for testing
+
+            other relevant input/output exposed from tensorflow graph
+
+    """
+
+    def __init__(self, test_triplets, test_item_ids, is_cold, train):
         # build map both-ways between compact and original indices
         # compact indices only contains:
         #  1) items in test set
@@ -12,15 +64,15 @@ class EvalData:
 
         self.is_cold = is_cold
 
-        self.test_item_ids = _test_item_ids
+        self.test_item_ids = test_item_ids
         # test_item_ids_map
         self.test_item_ids_map = {iid: i for i, iid in enumerate(self.test_item_ids)}
 
-        _test_ij_for_inf = [(t[0], t[1]) for t in _test_triplets if t[1] in self.test_item_ids_map]
+        _test_ij_for_inf = [(t[0], t[1]) for t in test_triplets if t[1] in self.test_item_ids_map]
         # test_user_ids
-        self.test_user_ids = np.unique(_test_triplets['uid'])
+        self.test_user_ids = np.unique(test_triplets['uid'])
         # test_user_ids_map
-        self.test_user_ids_map = {_id: _i for _i, _id in enumerate(self.test_user_ids)}
+        self.test_user_ids_map = {user_id: i for i, user_id in enumerate(self.test_user_ids)}
 
         _test_i_for_inf = [self.test_user_ids_map[_t[0]] for _t in _test_ij_for_inf]
         _test_j_for_inf = [self.test_item_ids_map[_t[1]] for _t in _test_ij_for_inf]
@@ -30,17 +82,17 @@ class EvalData:
             shape=[len(self.test_user_ids), len(self.test_item_ids)]
         ).tolil(copy=False)
 
-        _train_ij_for_inf = [(self.test_user_ids_map[_t[0]], self.test_item_ids_map[_t[1]]) for _t
-                             in train
-                             if _t[1] in self.test_item_ids_map and _t[0] in self.test_user_ids_map]
-        if self.is_cold and len(_train_ij_for_inf) is not 0:
+        train_ij_for_inf = [(self.test_user_ids_map[_t[0]], self.test_item_ids_map[_t[1]]) for _t
+                            in train
+                            if _t[1] in self.test_item_ids_map and _t[0] in self.test_user_ids_map]
+        if self.is_cold and len(train_ij_for_inf) is not 0:
             raise Exception('using cold dataset, but data is not cold!')
-        if not self.is_cold and len(_train_ij_for_inf) is 0:
+        if not self.is_cold and len(train_ij_for_inf) is 0:
             raise Exception('using warm datset, but data is not warm!')
 
         self.R_train_inf = None if self.is_cold else scipy.sparse.coo_matrix((
-            np.ones(len(_train_ij_for_inf)),
-            zip(*_train_ij_for_inf)), shape=self.R_test_inf.shape).tolil(copy=False)
+            np.ones(len(train_ij_for_inf)),
+            zip(*train_ij_for_inf)), shape=self.R_test_inf.shape).tolil(copy=False)
 
         # allocate fields
         self.U_pref_test = None
