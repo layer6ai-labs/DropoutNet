@@ -18,9 +18,9 @@ This repository contains python implementation of DropoutNet paper.
 ## Environment
 The python code is developed and tested on the following environment:
 * python 2.7
-* tensorflow-gpu==1.3.0
+* tensorflow-gpu 1.3.0
 * Intel Xeon E5-2630
-* Titan X (Pascal) 12gb, driver ver. 375.66
+* Titan X (Pascal) 12gb, driver ver. 384.81
 
 <a name="dataset"/>
 
@@ -37,15 +37,12 @@ In this dataset, we have trained a simple WMF model, whose performance is outlin
 
 1. Download dataset above, extract and keep the directory structures.
 
-2. Set parameters at the beginning of `main.py`
-    * set appropriate paths under `# SETTINGS`
-    * specifically, `DATA_PATH` must point to the `recsys.pub/eval` folder in the downloaded dataset
-    * `CHECKPOINT_PATH` should point to the directory to dump model files, or `None` if not dumping model files
-    * `TB_LOG_PATH` should point to the path to save Tensorboard log files, or `None` if not saving logs
-    * parameters can be changed under the `# DEFINITIONS` section
-  
-3. Runing the main script will start training.
-4. (Optionally) launch tensorboard to monitor progress by `tensorboard --logdir=/datadrive/tmp/citeu.tf.log`
+2. run `main.py`
+    * for usage, run with `main.py --help`
+    * this script demos DropoutNet on RecSys dataset, producing results outlined in the paper
+    * default setting runs a simple two layer network with appropriate setting
+    * default setting uses gpu for training and cpu for inference
+3. (Optionally) launch tensorboard to monitor progress by `tensorboard --logdir=<log_path>`
 
 <a name="notes"/>
 
