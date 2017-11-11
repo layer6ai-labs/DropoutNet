@@ -35,7 +35,7 @@ def main():
     _decay_lr_every = 50
     _lr_decay = 0.1
 
-    experiment = '%s_%s_2stage' % (
+    experiment = '%s_%s' % (
         datetime.datetime.now().strftime('%Y-%m-%d-%H:%M:%S'),
         '-'.join(str(x / 100) for x in model_select) if model_select else 'simple'
     )
@@ -183,13 +183,14 @@ def main():
                         recall_k=recall_at, eval_data=eval_cold_item)
 
                     # checkpoint
-                    if tf_saver is not None and np.sum(recall_warm + recall_cold_user + recall_cold_item) > np.sum(
+                    if np.sum(recall_warm + recall_cold_user + recall_cold_item) > np.sum(
                                             best_warm + best_cold_user + best_cold_item):
                         best_cold_user = recall_cold_user
                         best_cold_item = recall_cold_item
                         best_warm = recall_warm
                         best_step = n_step
-                        tf_saver.save(sess, _tf_ckpt_file)
+                        if tf_saver is not None:
+                            tf_saver.save(sess, _tf_ckpt_file)
 
                     timer.toc('%d [%d]b [%d]tot f=%.2f best[%d]' % (
                         n_step, len(data_batch), n_batch_trained, f_batch, best_step
