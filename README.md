@@ -44,8 +44,9 @@ The python code is developed and tested on the following environment:
 * python 2.7
 * tensorflow-gpu 1.3.0
 * Intel Xeon E5-2630
-* 128 GB ram (need about 50)
+* 128 GB ram (need about 30)
 * Titan X (Pascal) 12gb, driver ver. 384.81
+* CUDA 9 and CUDNN 7
 
 <a name="dataset"/>
 
@@ -54,7 +55,8 @@ The python code is developed and tested on the following environment:
 The code runs on the [ACM RecSys 2017 challenge dataset](http://2017.recsyschallenge.com/) used in the paper.
 
 To run the demo, download the dataset from [here](https://s3.amazonaws.com/public.layer6.ai/DropoutNet/recsys2017.pub.tar.gz).
-With this dataset we have also included a pre-trained Weighted Matrix Factorization model (WMF)\[Hu et al., 2008\], that is used as preference input to DropoutNet. WMF produces competitive performance on the warm start but can't be applied to cold start so this code demonstrates how to apply DropoutNet to provide cold start capability to WMF. The format of the data is as follows:
+With this dataset we have also included a pre-trained Weighted 
+Factorization model (WMF)\[Hu et al., 2008\], that is used as preference input to DropoutNet. WMF produces competitive performance on the warm start but can't be applied to cold start so this code demonstrates how to apply DropoutNet to provide cold start capability to WMF. The format of the data is as follows:
 ```
 recsys2017.pub				// root folder when tar is extracted
 └─ eval					// this is where the model should point to
@@ -73,7 +75,7 @@ recsys2017.pub				// root folder when tar is extracted
    ├─ item_features_0based.txt		// our extracted item features in libsvm text form
    └─ user_features_0based.txt		// our extracted user features in libsvm text form
       
-sparse matrix are stored in csv as:
+sparse matrices are stored in csv as:
   <USER_ID>,<ITEM_ID>,<INTERACTION_TYPE>,<TIMESTAMP>
 where INTERACTION_TYPE is one of:
   0: impression
@@ -101,7 +103,8 @@ during training recall@50,100,...,500 accuracy is shown every 50K updates for wa
 Notes:
 
 * Make sure `--data-dir` points to the `eval/` folder, not the root
-* On the setup outlined above, 2 full user batches (50,000 batches with 100 updates each) takes approximately 14 minutes.
+* On the setup outlined above, 2 full user batches (50,000 batches with 100 updates each) takes approximately 14 minutes, with the current GPU/CPU setting.
+* Currently, training happens on GPU while target inference and target generation is on CPU.
 
 ## Validation Curves
 <p align="center">
