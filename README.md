@@ -1,5 +1,9 @@
 # DropoutNet
-python + tensorflow implementation of DropoutNet paper from NIPS 2017
+Python + TensorFlow implementation of the DropoutNet model
+
+[Maksims Volkovs](www.cs.toronto.edu/~mvolkovs), Guangwei Yu, Tomi Poutanen
+
+[layer6.ai](http://layer6.ai)
 
 ## Table of Contents  
 0. [Introduction](#intro)  
@@ -11,7 +15,25 @@ python + tensorflow implementation of DropoutNet paper from NIPS 2017
 <a name="intro"/>
 
 ## Introduction
-This repository contains python implementation of DropoutNet paper.
+This repository contains full implementation of the DropoutNet model and icludes both training and evaluation routines. We also provide the [ACM RecSys 2017 Challenge](http://2017.recsyschallenge.com) dataset that we further split into three subsets for warm start, user cold start and item cold start evaluation. The aim is to train a *single* model that can be applied to all three tasks and we report validation accuracy on each task during training. If you use this model in your research please cite this paper:
+```
+@inproceedings{Volkovs2017,
+	author = {Maksims Volkovs and Guangwei Yu and Tomi Poutanen},
+	title = {DropoutNet: {Addressing} Cold Start in Recommender Systems},
+	booktitle = {Neural Information Processing Systems},
+	year = {2017}
+}
+```
+and also this paper if you use the RecSys dataset:
+```
+@inproceedings{Volkovs2017,
+	author = {Fabian Abel and Yashar Deldjoo and Mehdi Elahi and Daniel Kohlsdorf},
+	title = {RecSys Challenge 2017: {Offline} and Online Evaluation},
+	booktitle = {ACM Conference on Recommender Systems},
+	year = {2017}
+}
+```
+
 
 <a name="env"/>
 
