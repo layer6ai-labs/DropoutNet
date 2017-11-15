@@ -195,7 +195,8 @@ def main():
                     timer.toc('%d [%d]b [%d]tot f=%.2f best[%d]' % (
                         n_step, len(data_batch), n_batch_trained, f_batch, best_step
                     )).tic()
-                    print('\t%s\n\t%s\n\t%s' % (
+                    print ('\t\t\t'+' '.join([('@'+str(i)).ljust(6) for i in recall_at]))
+                    print('warm start\t%s\ncold user\t%s\ncold item\t%s' % (
                         ' '.join(['%.4f' % i for i in recall_warm]),
                         ' '.join(['%.4f' % i for i in recall_cold_user]),
                         ' '.join(['%.4f' % i for i in recall_cold_item])
