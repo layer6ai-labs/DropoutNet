@@ -1,7 +1,7 @@
 # DropoutNet <a href="https://layer6.ai/"><img src="https://github.com/layer6ai-labs/DropoutNet/blob/master/logs/logo_fill.png" width="100"></a>
 Python + TensorFlow implementation of the [DropoutNet](http://www.cs.toronto.edu/~mvolkovs/nips2017_deepcf.pdf) - a deep neural network model for cold start in recommender systems.
 
-[Maksims Volkovs](www.cs.toronto.edu/~mvolkovs), [Guangwei Yu](http://www.cs.toronto.edu/~guangweiyu), Tomi Poutanen
+Authors: [Maksims Volkovs](www.cs.toronto.edu/~mvolkovs), [Guangwei Yu](http://www.cs.toronto.edu/~guangweiyu), Tomi Poutanen
 
 ## Table of Contents  
 0. [Introduction](#intro)  
