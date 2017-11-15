@@ -1,5 +1,5 @@
 # DropoutNet
-Python + TensorFlow implementation of the DropoutNet model
+Python + TensorFlow implementation of the DropoutNet - a deep neural network model for cold start in recommender systems.
 
 [Maksims Volkovs](www.cs.toronto.edu/~mvolkovs), Guangwei Yu, Tomi Poutanen
 
@@ -15,7 +15,7 @@ Python + TensorFlow implementation of the DropoutNet model
 <a name="intro"/>
 
 ## Introduction
-This repository contains full implementation of the DropoutNet model and icludes both training and evaluation routines. We also provide the [ACM RecSys 2017 Challenge](http://2017.recsyschallenge.com) dataset that we further split into three subsets for warm start, user cold start and item cold start evaluation. The aim is to train a *single* model that can be applied to all three tasks and we report validation accuracy on each task during training. If you use this model in your research please cite this paper:
+This repository contains full implementation of the DropoutNet model and includes both training and evaluation routines. We also provide the [ACM RecSys 2017 Challenge](http://2017.recsyschallenge.com) dataset that we further split into three subsets for warm start, user cold start and item cold start evaluation. The aim is to train a *single* model that can be applied to all three tasks and we report validation accuracy on each task during training. If you use this model in your research please cite this paper:
 ```
 @inproceedings{Volkovs2017,
 	author = {Maksims Volkovs and Guangwei Yu and Tomi Poutanen},
@@ -26,7 +26,7 @@ This repository contains full implementation of the DropoutNet model and icludes
 ```
 and also this paper if you use the RecSys dataset:
 ```
-@inproceedings{Volkovs2017,
+@inproceedings{Abel2017,
 	author = {Fabian Abel and Yashar Deldjoo and Mehdi Elahi and Daniel Kohlsdorf},
 	title = {RecSys Challenge 2017: {Offline} and Online Evaluation},
 	booktitle = {ACM Conference on Recommender Systems},
@@ -51,30 +51,26 @@ The python code is developed and tested on the following environment:
 
 The code runs on the [ACM RecSys 2017 challenge dataset](http://2017.recsyschallenge.com/) used in the paper.
 
-To run the demo, download the dataset from [here](https://s3.amazonaws.com/public.layer6.ai/DropoutNet/recsys2017.pub.tar.gz)
-In this dataset, we have trained a simple WMF model, whose performance is outlined in the paper. The model gives competitive results on the warm dataset but near random results on the cold user or item sets. These are compressed in binary form for convenience.
+To run the demo, download the dataset from [here](https://s3.amazonaws.com/public.layer6.ai/DropoutNet/recsys2017.pub.tar.gz).
+With this dataset we have also included a pre-trained Weighted Matrix Factorization model (WMF)\[Hu et al., 2008\], that is used as preference input to DropoutNet. WMF produces competitive performance on the warm start but can't be applied to cold start so this code demonstrates how to apply DropoutNet to provide cold start capability to WMF. The format of the data is as follows:
 
 <a name="demo"/>
 
 ## Running training code
 
-1. Download dataset above, extract and keep the directory structures.
+1. Download dataset above, extract and keep the directory structure.
 
 2. run `main.py`
     * for usage, run with `main.py --help`
-    * this script demos DropoutNet on RecSys dataset, producing results outlined in the paper
-    * default setting runs a simple two layer network with appropriate setting
-    * default setting uses gpu for training and cpu for inference
+    * default setting trains a two layer neural network with hyperparameters selected for the RecSys data
+    * gpu is used for training by default and cpu for inference
 3. (Optionally) launch tensorboard to monitor progress by `tensorboard --logdir=<log_path>`
 
-the output is evaluation of recall at 50,100,...,500 for:
-- warm
-- cold user
-- cold item
+during training recall@50,100,...,500 accuracy is shown every 50K updates for warm start, user cold start and item cold start validation sets
 
 <a name="notes"/>
 
 ## Notes
 
 * Make sure `--data-dir` points to the `eval/` folder, not the root
-* On the machine outlined above, 2 full user batch (50,000 batches with 100 updates each) takes about 14 minutes, reaching approximately 0.45 recall@500 for warm, and 0.30 for both cold user and cold item.
+* On the setup outlined above, 2 full user batches (50,000 batches with 100 updates each) takes approximately 14 minutes.
