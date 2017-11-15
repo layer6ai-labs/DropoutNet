@@ -8,7 +8,6 @@ Authors: [Maksims Volkovs](www.cs.toronto.edu/~mvolkovs), [Guangwei Yu](http://w
 1. [Environment](#env)
 2. [Dataset](#dataset)
 3. [Training](#demo)
-3. [Notes](#notes)
 
 <a name="intro"/>
 
@@ -94,9 +93,7 @@ where INTERACTION_TYPE is one of:
 
 during training recall@50,100,...,500 accuracy is shown every 50K updates for warm start, user cold start and item cold start validation sets
 
-<a name="notes"/>
-
-## Notes
+Notes:
 
 * Make sure `--data-dir` points to the `eval/` folder, not the root
 * On the setup outlined above, 2 full user batches (50,000 batches with 100 updates each) takes approximately 14 minutes.
