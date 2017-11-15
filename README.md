@@ -1,9 +1,7 @@
-# DropoutNet
+# DropoutNet <a href="https://layer6.ai/"><img src="https://github.com/layer6ai-labs/DropoutNet/blob/master/logs/logo_fill.png" width="100"></a>
 Python + TensorFlow implementation of the [DropoutNet](http://www.cs.toronto.edu/~mvolkovs/nips2017_deepcf.pdf) - a deep neural network model for cold start in recommender systems.
 
 [Maksims Volkovs](www.cs.toronto.edu/~mvolkovs), [Guangwei Yu](http://www.cs.toronto.edu/~guangweiyu), Tomi Poutanen
-
-[layer6.ai](http://layer6.ai)
 
 ## Table of Contents  
 0. [Introduction](#intro)  
@@ -53,6 +51,34 @@ The code runs on the [ACM RecSys 2017 challenge dataset](http://2017.recsyschall
 
 To run the demo, download the dataset from [here](https://s3.amazonaws.com/public.layer6.ai/DropoutNet/recsys2017.pub.tar.gz).
 With this dataset we have also included a pre-trained Weighted Matrix Factorization model (WMF)\[Hu et al., 2008\], that is used as preference input to DropoutNet. WMF produces competitive performance on the warm start but can't be applied to cold start so this code demonstrates how to apply DropoutNet to provide cold start capability to WMF. The format of the data is as follows:
+```
+- recsys2017.pub			// root folder when tar is extracted
+  -eval					// this is where the model should point to
+    *item_features_0based.txt		// our extracted item features in libsvm text form
+    *user_features_0based.txt		// our extracted user features in libsvm text form
+    -trained				// we have included our trained latent model to start DropoutNet
+      -warm				// only warm is included for preference latent vectors
+        *U.csv.bin			// numpy binarized user preference latent vectors (U)
+	*V.csv.bin			// numpy binarized item preference latent vectors (V)
+    -warm				// this folder contains all datasets
+      *test_cold_item.csv		// sparse matrix for cold-start-item testing
+      *test_cold_item_item_ids.csv	// item ids used for cold-start-item testing
+      *test_cold_user.csv    		// sparse matrix for cold-start-user testing
+      *test_cold_user_item_ids.csv	// item ids used for cold-start-user testing
+      *test_warm.csv			// sparse matrix for warm-start testing
+      *test_warm_item_ids.csv		// item ids used for warm-start testing
+      *train.csv			// sparse matrix for training
+      
+sparse matrix are stored in csv as:
+  <USER_ID>,<ITEM_ID>,<INTERACTION_TYPE>,<TIMESTAMP>
+where INTERACTION_TYPE is one of:
+  0: impression
+  1: click
+  2: bookmark
+  3: reply
+  4: delete
+  5: recruiter interest
+```
 
 <a name="demo"/>
 
@@ -74,3 +100,6 @@ during training recall@50,100,...,500 accuracy is shown every 50K updates for wa
 
 * Make sure `--data-dir` points to the `eval/` folder, not the root
 * On the setup outlined above, 2 full user batches (50,000 batches with 100 updates each) takes approximately 14 minutes.
+
+
+												 
