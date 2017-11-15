@@ -100,6 +100,10 @@ during training recall@50,100,...,500 accuracy is shown every 50K updates for wa
 
 * Make sure `--data-dir` points to the `eval/` folder, not the root
 * On the setup outlined above, 2 full user batches (50,000 batches with 100 updates each) takes approximately 14 minutes.
+## Training Curve
+<p align="center">
+<img src="https://github.com/layer6ai-labs/DropoutNet/blob/master/logs/warm.png" width="500">
+<img src="https://github.com/layer6ai-labs/DropoutNet/blob/master/logs/cold_user.png" width="500">
+<img src="https://github.com/layer6ai-labs/DropoutNet/blob/master/logs/cold_item.png" width="500">
+</p>
 
-
-												 
