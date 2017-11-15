@@ -56,7 +56,7 @@ With this dataset we have also included a pre-trained Weighted Matrix Factorizat
   -eval					// this is where the model should point to
     *item_features_0based.txt		// our extracted item features in libsvm text form
     *user_features_0based.txt		// our extracted user features in libsvm text form
-    -trained				// we have included our trained latent model to start DropoutNet
+    -trained				// we have included our trained latent model from WMF
       -warm				// only warm is included for preference latent vectors
         *U.csv.bin			// numpy binarized user preference latent vectors (U)
 	*V.csv.bin			// numpy binarized item preference latent vectors (V)
@@ -100,7 +100,8 @@ during training recall@50,100,...,500 accuracy is shown every 50K updates for wa
 
 * Make sure `--data-dir` points to the `eval/` folder, not the root
 * On the setup outlined above, 2 full user batches (50,000 batches with 100 updates each) takes approximately 14 minutes.
-## Training Curve
+
+## Validation Curves
 <p align="center">
 <img src="https://github.com/layer6ai-labs/DropoutNet/blob/master/logs/warm.png" width="500">
 <img src="https://github.com/layer6ai-labs/DropoutNet/blob/master/logs/cold_user.png" width="500">
