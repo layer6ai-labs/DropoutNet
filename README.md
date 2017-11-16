@@ -54,7 +54,7 @@ The python code is developed and tested on the following environment:
 
 To run the model, download the dataset from [here](https://s3.amazonaws.com/public.layer6.ai/DropoutNet/recsys2017.pub.tar.gz).
 With this dataset we have also included a pre-trained Weighted 
-Factorization model (WMF)\[Hu et al., 2008\], that is used as preference input to DropoutNet. WMF produces competitive performance on the warm start doesn't generalize to cold start. So this code demonstrates how to apply DropoutNet to provide cold start capability to WMF. The format of the data is as follows:
+Factorization model (WMF)\[Hu et al., 2008\], that is used as preference input to DropoutNet. WMF produces competitive performance on warm start but doesn't generalize to cold start. So this code demonstrates how to apply DropoutNet to provide cold start capability to WMF. The format of the data is as follows:
 ```
 recsys2017.pub				
 └─ eval					// use path to this folder in --data-dir
