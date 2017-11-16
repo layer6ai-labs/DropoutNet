@@ -73,7 +73,7 @@ recsys2017.pub
    ├─ item_features_0based.txt		// item features in libsvm format
    └─ user_features_0based.txt		// user features in libsvm format
       
-sparse matrices are stored in csv as:
+interactions are stored in csv as:
   <USER_ID>,<ITEM_ID>,<INTERACTION_TYPE>,<TIMESTAMP>
 where INTERACTION_TYPE is one of:
   0: impression
