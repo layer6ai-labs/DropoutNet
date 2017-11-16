@@ -100,8 +100,8 @@ During training recall@50,100,...,500 accuracy is shown every 50K updates for wa
 Notes:
 
 * Make sure `--data-dir` points to the `eval/` folder, not the root
-* On the setup outlined above, 2 full user batches (50,000 batches with 100 updates each) takes approximately 14 minutes, with the current GPU/CPU setting.
-* Currently, training happens on GPU while target inference and target generation is on CPU.
+* On our environment (described above) 50K updates takes approximately 14 minutes with the default GPU/CPU setting.
+* By default, training happens on GPU while inference and batch generation is on CPU.
 
 ## Validation Curves
 <p align="center">
