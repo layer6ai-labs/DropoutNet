@@ -1,6 +1,6 @@
 
 <p align="center">
-<a href="https://layer6.ai/"><img src="https://github.com/layer6ai-labs/DropoutNet/blob/master/logs/logo_alt.png" width="200"></a>
+<a href="https://layer6.ai/"><img src="https://github.com/layer6ai-labs/DropoutNet/blob/master/logs/logo_alt.png" width="180"></a>
 </p>
 
 # DropoutNet
@@ -52,28 +52,26 @@ The python code is developed and tested on the following environment:
 
 ## Dataset
 
-The code runs on the [ACM RecSys 2017 challenge dataset](http://2017.recsyschallenge.com/) used in the paper.
-
-To run the demo, download the dataset from [here](https://s3.amazonaws.com/public.layer6.ai/DropoutNet/recsys2017.pub.tar.gz).
+To run the model, download the dataset from [here](https://s3.amazonaws.com/public.layer6.ai/DropoutNet/recsys2017.pub.tar.gz).
 With this dataset we have also included a pre-trained Weighted 
-Factorization model (WMF)\[Hu et al., 2008\], that is used as preference input to DropoutNet. WMF produces competitive performance on the warm start but can't be applied to cold start so this code demonstrates how to apply DropoutNet to provide cold start capability to WMF. The format of the data is as follows:
+Factorization model (WMF)\[Hu et al., 2008\], that is used as preference input to DropoutNet. WMF produces competitive performance on the warm start doesn't generalize to cold start. So this code demonstrates how to apply DropoutNet to provide cold start capability to WMF. The format of the data is as follows:
 ```
-recsys2017.pub				// root folder when tar is extracted
-└─ eval					// this is where the model should point to
-   ├─ trained				// we have included our trained latent model from WMF
-   │  └─ warm				// only warm is included for preference latent vectors
-   │     ├─ U.csv.bin			// numpy binarized user preference latent vectors (U)
-   │     └─ V.csv.bin			// numpy binarized item preference latent vectors (V)
-   ├─ warm				// this folder contains all datasets
-   │  ├─ test_cold_item.csv		// sparse matrix for cold-start-item testing
-   │  ├─ test_cold_item_item_ids.csv	// item ids used for cold-start-item testing
-   │  ├─ test_cold_user.csv    		// sparse matrix for cold-start-user testing
-   │  ├─ test_cold_user_item_ids.csv	// item ids used for cold-start-user testing
-   │  ├─ test_warm.csv			// sparse matrix for warm-start testing
-   │  ├─ test_warm_item_ids.csv		// item ids used for warm-start testing
-   │  └─ train.csv			// sparse matrix for training
-   ├─ item_features_0based.txt		// our extracted item features in libsvm text form
-   └─ user_features_0based.txt		// our extracted user features in libsvm text form
+recsys2017.pub				
+└─ eval					// use path to this folder in --data-dir
+   ├─ trained				// WMF model
+   │  └─ warm				
+   │     ├─ U.csv.bin			// numpy binarized WMF user preference latent vectors (U)
+   │     └─ V.csv.bin			// numpy binarized WMF item preference latent vectors (V)
+   ├─ warm				
+   │  ├─ test_cold_item.csv		// validation interactions for item cold start 
+   │  ├─ test_cold_item_item_ids.csv	// targets item ids for item cold start
+   │  ├─ test_cold_user.csv    		// validation interactions for user cold start
+   │  ├─ test_cold_user_item_ids.csv	// target user ids for user cold start
+   │  ├─ test_warm.csv			// validation interactions for warm start
+   │  ├─ test_warm_item_ids.csv		// target item ids for warm start
+   │  └─ train.csv			// training interactions
+   ├─ item_features_0based.txt		// item features in libsvm format
+   └─ user_features_0based.txt		// user features in libsvm format
       
 sparse matrices are stored in csv as:
   <USER_ID>,<ITEM_ID>,<INTERACTION_TYPE>,<TIMESTAMP>
@@ -82,7 +80,6 @@ where INTERACTION_TYPE is one of:
   1: click
   2: bookmark
   3: reply
-  4: delete
   5: recruiter interest
 ```
 
@@ -98,7 +95,7 @@ where INTERACTION_TYPE is one of:
     * gpu is used for training by default and cpu for inference
 3. (Optionally) launch tensorboard to monitor progress by `tensorboard --logdir=<log_path>`
 
-during training recall@50,100,...,500 accuracy is shown every 50K updates for warm start, user cold start and item cold start validation sets
+During training recall@50,100,...,500 accuracy is shown every 50K updates for warm start, user cold start and item cold start validation sets.
 
 Notes:
 
