@@ -44,7 +44,7 @@ The python code is developed and tested on the following environment:
 * python 2.7
 * tensorflow-gpu 1.3.0
 * Intel Xeon E5-2630
-* 128 GB ram (need about 30)
+* 128 GB ram (around 30GB is required)
 * Titan X (Pascal) 12gb, driver ver. 384.81
 * CUDA 9 and CUDNN 7
 
@@ -53,8 +53,8 @@ The python code is developed and tested on the following environment:
 ## Dataset
 
 To run the model, download the dataset from [here](https://s3.amazonaws.com/public.layer6.ai/DropoutNet/recsys2017.pub.tar.gz).
-With this dataset we have also included a pre-trained Weighted 
-Factorization model (WMF)\[Hu et al., 2008\], that is used as preference input to DropoutNet. WMF produces competitive performance on warm start but doesn't generalize to cold start. So this code demonstrates how to apply DropoutNet to provide cold start capability to WMF. The format of the data is as follows:
+With this dataset we have also included pre-trained Weighted 
+Factorization model (WMF)\[Hu et al., 2008\], that is used as preference input to the DropoutNet. WMF produces competitive performance on warm start but doesn't generalize to cold start. So this code demonstrates how to apply DropoutNet to provide cold start capability to WMF. The format of the data is as follows:
 ```
 recsys2017.pub				
 └─ eval					// use path to this folder in --data-dir
@@ -87,7 +87,7 @@ where INTERACTION_TYPE is one of:
 
 ## Running training code
 
-1. Download dataset above, extract and keep the directory structure.
+1. Download the dataset, extract and keep the directory structure.
 
 2. run `main.py`
     * for usage, run with `main.py --help`
