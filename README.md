@@ -44,8 +44,8 @@ The python code is developed and tested on the following environment:
 * python 2.7
 * tensorflow-gpu 1.3.0
 * Intel Xeon E5-2630
-* 128 GB ram (around 30GB is required)
-* Titan X (Pascal) 12gb, driver ver. 384.81
+* 128GB ram (around 30GB is required)
+* Titan X (Pascal) 12GB, driver ver. 384.81
 * CUDA 9 and CUDNN 7
 
 <a name="dataset"/>
