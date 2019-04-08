@@ -4,7 +4,8 @@
 </p>
 
 # DropoutNet
-Python + TensorFlow implementation of the [DropoutNet](http://www.cs.toronto.edu/~mvolkovs/nips2017_deepcf.pdf) - a deep neural network model for cold start in recommender systems.
+Python + TensorFlow implementation for the NIPS'17 paper 
+["DropoutNet: Addressing Cold Start in Recommender Systems"](http://www.cs.toronto.edu/~mvolkovs/nips2017_deepcf.pdf).
 
 Authors: [Maksims Volkovs](http://www.cs.toronto.edu/~mvolkovs), [Guangwei Yu](http://www.cs.toronto.edu/~guangweiyu), Tomi Poutanen
 
