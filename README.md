@@ -11,6 +11,8 @@ Authors: [Maksims Volkovs](http://www.cs.toronto.edu/~mvolkovs), [Guangwei Yu](h
 ## Introduction
 This repository contains full implementation of the DropoutNet model and includes both training and evaluation routines. We also provide the [ACM RecSys 2017 Challenge](http://2017.recsyschallenge.com) dataset that we further split into three subsets for warm start, user cold start and item cold start evaluation. The aim is to train a *single* model that can be applied to all three tasks and we report validation accuracy on each task during training.
 
+Furthermore per request, we also provide scripts and all necessary data to run the Citeulike cold-start experiment. See section on Citeulike below for further details as well as links to the packaged data.
+
 
 <a name="env"/>
 
