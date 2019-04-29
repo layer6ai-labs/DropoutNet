@@ -103,13 +103,20 @@ class DeepCF:
 
         self.Uin = tf.placeholder(tf.float32, shape=[None, self.rank_in], name='U_in_raw')
         self.Vin = tf.placeholder(tf.float32, shape=[None, self.rank_in], name='V_in_raw')
-        self.Ucontent = tf.placeholder(tf.float32, shape=[None, self.phi_u_dim], name='U_content')
-        self.Vcontent = tf.placeholder(tf.float32, shape=[None, self.phi_v_dim], name='V_content')
+        if self.phi_u_dim>0:
+            self.Ucontent = tf.placeholder(tf.float32, shape=[None, self.phi_u_dim], name='U_content')
+            u_concat = tf.concat([self.Uin, self.Ucontent], 1)
+        else:
+            u_concat = self.Uin
 
-        u_concat = tf.concat([self.Uin, self.Ucontent], 1)
-        v_concat = tf.concat([self.Vin, self.Vcontent], 1)
-        print '\tu_concat.shape=%s' % str(u_concat.get_shape())
-        print '\tv_concat.shape=%s' % str(v_concat.get_shape())
+        if self.phi_v_dim>0:
+            self.Vcontent = tf.placeholder(tf.float32, shape=[None, self.phi_v_dim], name='V_content')
+            v_concat = tf.concat([self.Vin, self.Vcontent], 1)
+        else:
+            v_concat = self.Vin
+
+        print ('\tu_concat.shape=%s' % str(u_concat.get_shape()))
+        print ('\tv_concat.shape=%s' % str(v_concat.get_shape()))
 
         u_last = u_concat
         v_last = v_concat
@@ -192,10 +199,11 @@ class DeepCF:
         _eval_dict = {
             self.Uin: eval_data.U_pref_test[_eval_start:_eval_finish, :],
             self.Vin: eval_data.V_pref_test,
-            self.Ucontent: eval_data.U_content_test[_eval_start:_eval_finish, :],
             self.Vcontent: eval_data.V_content_test,
             self.phase: 0
         }
+        if self.Ucontent!=None: 
+            _eval_dict[self.Ucontent]= eval_data.U_content_test[_eval_start:_eval_finish, :]
         if not eval_data.is_cold:
             _eval_dict[self.eval_trainR] = eval_data.tf_eval_train[_i]
         return _eval_dict

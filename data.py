@@ -9,11 +9,16 @@ This module contains class and methods related to data used in DropoutNet
 """
 
 
-def load_eval_data(test_file, test_id_file, name, cold, train_data):
+def load_eval_data(test_file, test_id_file, name, cold, train_data, citeu=False):
     timer = utils.timer()
     with open(test_id_file) as f:
         test_item_ids = [int(line) for line in f]
-        test_data = pd.read_csv(test_file, delimiter=",", header=-1, dtype=np.int32).values.ravel().view(
+        test_data = pd.read_csv(test_file, delimiter=",", header=-1, dtype=np.int32).values.ravel()
+        if citeu:
+            test_data = test_data.view(
+            dtype=[('uid', np.int32), ('iid', np.int32), ('inter', np.int32)])
+        else:
+            test_data = test_data.view(
             dtype=[('uid', np.int32), ('iid', np.int32), ('inter', np.int32), ('date', np.int32)])
         timer.toc('read %s triplets %s' % (name, test_data.shape)).tic()
         eval_data = EvalData(
@@ -106,8 +111,13 @@ class EvalData:
     def init_tf(self, user_factors, item_factors, user_content, item_content, eval_run_batchsize):
         self.U_pref_test = user_factors[self.test_user_ids, :]
         self.V_pref_test = item_factors[self.test_item_ids, :]
-        self.V_content_test = item_content[self.test_item_ids, :].todense()
-        self.U_content_test = user_content[self.test_user_ids, :].todense()
+        self.V_content_test = item_content[self.test_item_ids, :]
+        if scipy.sparse.issparse(self.V_content_test):
+            self.V_content_test = self.V_content_test.todense()
+        if user_content!=None:
+            self.U_content_test = user_content[self.test_user_ids, :]
+            if scipy.sparse.issparse(self.U_content_test):
+                self.U_content_test = self.U_content_test.todense()
         eval_l = self.R_test_inf.shape[0]
         self.eval_batch = [(x, min(x + eval_run_batchsize, eval_l)) for x
                            in xrange(0, eval_l, eval_run_batchsize)]
