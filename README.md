@@ -87,4 +87,9 @@ Notes:
 
 ## Citeulike Cold-start
 In addition to Recsys, we also provide `main_cold_citeu.py` to run the cold-start experiments on the publicly available Citeulike dataset.
-For convenience, we have proivded our evaluation split for cold start, item features, as well as the WMF user item preference latent vectors available [here](https://s3.amazonaws.com/public.layer6.ai/DropoutNet/citeu_cold.tar.gz). Point `--data-dir` to your extracted `eval` folder.
+For convenience, we have proivded our evaluation split for cold start, item features, as well as the WMF user item preference latent vectors available [here](https://s3.amazonaws.com/public.layer6.ai/DropoutNet/citeu_cold.tar.gz). Point `--data-dir` to your extracted `eval` folder. A sample training run yield following validation performance per 1000 update.
+
+<p align="center">
+<img src="https://github.com/layer6ai-labs/DropoutNet/blob/master/logs/dropoutnet_citeu_cold.png" width="500">
+</p>
+
