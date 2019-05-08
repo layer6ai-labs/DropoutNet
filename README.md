@@ -11,6 +11,8 @@ Authors: [Maksims Volkovs](http://www.cs.toronto.edu/~mvolkovs), [Guangwei Yu](h
 ## Introduction
 This repository contains full implementation of the DropoutNet model and includes both training and evaluation routines. We also provide the [ACM RecSys 2017 Challenge](http://2017.recsyschallenge.com) dataset that we further split into three subsets for warm start, user cold start and item cold start evaluation. The aim is to train a *single* model that can be applied to all three tasks and we report validation accuracy on each task during training.
 
+Furthermore per request, we also provide scripts and all necessary data to run the Citeulike cold-start experiment. See section on Citeulike below for further details as well as links to the packaged data.
+
 
 <a name="env"/>
 
@@ -83,5 +85,18 @@ Notes:
 <img src="https://github.com/layer6ai-labs/DropoutNet/blob/master/logs/warm.png" width="500">
 <img src="https://github.com/layer6ai-labs/DropoutNet/blob/master/logs/cold_user.png" width="500">
 <img src="https://github.com/layer6ai-labs/DropoutNet/blob/master/logs/cold_item.png" width="500">
+</p>
+
+## Citeulike
+In addition to Recsys, we also provide pipeline to run the publicly available Citeulike data. Note that, as mentioned in the paper, we evaluate cold start the same way as the CTR paper while the warm start evaluation is modified. For convenience, we have proivded our evaluation split for both cold and warm start, item features, as well as the WMF user item preference latent vectors available [here](https://s3.amazonaws.com/public.layer6.ai/DropoutNet/citeu.tar.gz).
+
+The citeulike warm and cold models are trained separately as their validation sets differ. Please use the scripts
+`main_cold_citeu.py` and `main_warm_citeu.py` to run the experiments on the Citeulike dataset.
+
+Point `--data-dir` to your extracted `eval` folder after extracting `citeu.tar.gz`. Sample training runs with respective validation performance are shown below per 1000 updates.
+
+<p align="center">
+<img src="https://github.com/layer6ai-labs/DropoutNet/blob/master/logs/dropoutnet_citeu_cold.png" width="500">
+<img src="https://github.com/layer6ai-labs/DropoutNet/blob/master/logs/dropoutnet_citeu_warm.png" width="500">
 </p>
 
