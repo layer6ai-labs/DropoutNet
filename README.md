@@ -4,9 +4,8 @@
 </p>
 
 ## NIPS'17 DropoutNet: Addressing Cold Start in Recommender Systems
-Authors: [Maksims Volkovs](http://www.cs.toronto.edu/~mvolkovs), [Guangwei Yu](http://www.cs.toronto.edu/~guangweiyu), Tomi Poutanen
-
- [[paper](http://www.cs.toronto.edu/~mvolkovs/nips2017_deepcf.pdf)]
+Authors: [Maksims Volkovs](http://www.cs.toronto.edu/~mvolkovs), [Guangwei Yu](http://www.cs.toronto.edu/~guangweiyu), Tomi Poutanen  
+[[paper](http://www.cs.toronto.edu/~mvolkovs/nips2017_deepcf.pdf)]
 
 <a name="intro"/>
 
