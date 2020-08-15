@@ -3,8 +3,10 @@
 <a href="https://layer6.ai/"><img src="https://github.com/layer6ai-labs/DropoutNet/blob/master/logs/logobox.jpg" width="180"></a>
 </p>
 
-## NIPS'17 DropoutNet: Addressing Cold Start in Recommender Systems [[paper](http://www.cs.toronto.edu/~mvolkovs/nips2017_deepcf.pdf)]
+## NIPS'17 DropoutNet: Addressing Cold Start in Recommender Systems
 Authors: [Maksims Volkovs](http://www.cs.toronto.edu/~mvolkovs), [Guangwei Yu](http://www.cs.toronto.edu/~guangweiyu), Tomi Poutanen
+
+ [[paper](http://www.cs.toronto.edu/~mvolkovs/nips2017_deepcf.pdf)]
 
 <a name="intro"/>
 
