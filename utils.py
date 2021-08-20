@@ -155,7 +155,11 @@ def batch_eval_recall(_sess, tf_eval, eval_feed_dict, recall_k, eval_data):
         x = scipy.sparse.lil_matrix(y.shape)
         x.rows = preds_k
         x.data = np.ones_like(preds_k)
+        x = x.toarray()
+        y = y.toarray()
 
-        z = y.multiply(x)
+        z = np.multiply(y,x)
+        y = eval_data.R_test_inf[y_nz, :]
+        z = scipy.sparse.lil_matrix(z)
         recall.append(np.mean(np.divide((np.sum(z, 1)), np.sum(y, 1))))
     return recall

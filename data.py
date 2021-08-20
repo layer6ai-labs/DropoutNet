@@ -13,7 +13,7 @@ def load_eval_data(test_file, test_id_file, name, cold, train_data, citeu=False)
     timer = utils.timer()
     with open(test_id_file) as f:
         test_item_ids = [int(line) for line in f]
-        test_data = pd.read_csv(test_file, delimiter=",", header=-1, dtype=np.int32).values.ravel()
+        test_data = pd.read_csv(test_file, delimiter=",", header=None, dtype=np.int32).values.ravel()
         if citeu:
             test_data = test_data.view(
             dtype=[('uid', np.int32), ('iid', np.int32), ('inter', np.int32)])
@@ -28,7 +28,7 @@ def load_eval_data(test_file, test_id_file, name, cold, train_data, citeu=False)
             train=train_data
         )
         timer.toc('loaded %s' % name).tic()
-        print(eval_data.get_stats_string())
+        print((eval_data.get_stats_string()))
         return eval_data
 
 
@@ -97,7 +97,7 @@ class EvalData:
 
         self.R_train_inf = None if self.is_cold else scipy.sparse.coo_matrix((
             np.ones(len(train_ij_for_inf)),
-            zip(*train_ij_for_inf)), shape=self.R_test_inf.shape).tolil(copy=False)
+            list(zip(*train_ij_for_inf))), shape=self.R_test_inf.shape).tolil(copy=False)
 
         # allocate fields
         self.U_pref_test = None
@@ -120,7 +120,7 @@ class EvalData:
                 self.U_content_test = self.U_content_test.todense()
         eval_l = self.R_test_inf.shape[0]
         self.eval_batch = [(x, min(x + eval_run_batchsize, eval_l)) for x
-                           in xrange(0, eval_l, eval_run_batchsize)]
+                           in range(0, eval_l, eval_run_batchsize)]
 
         self.tf_eval_train = []
         self.tf_eval_test = []
@@ -128,7 +128,7 @@ class EvalData:
         if not self.is_cold:
             for (eval_start, eval_finish) in self.eval_batch:
                 _ui = self.R_train_inf[eval_start:eval_finish, :].tocoo()
-                _ui = zip(_ui.row, _ui.col)
+                _ui = list(zip(_ui.row, _ui.col))
                 self.tf_eval_train.append(
                     tf.SparseTensorValue(
                         indices=_ui,

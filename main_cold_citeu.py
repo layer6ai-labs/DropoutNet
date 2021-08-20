@@ -25,7 +25,7 @@ def main():
     n_scores_user = 2500
     data_batch_size = 100
     dropout = args.dropout
-    recall_at = range(10, 110, 10)
+    recall_at = list(range(10, 110, 10))
     eval_batch_size = 1000
     max_data_per_step = 2500000
     eval_every = args.eval_every
@@ -41,7 +41,7 @@ def main():
     )
     _tf_ckpt_file = None if checkpoint_path is None else checkpoint_path + experiment + '/tf_checkpoint'
 
-    print('running: ' + experiment)
+    print(('running: ' + experiment))
 
     dat = load_data(data_path)
     u_pref_scaled = dat['u_pref_scaled']
@@ -123,7 +123,7 @@ def main():
                 n_targets = len(target_scores)
                 perm = np.random.permutation(n_targets)
                 n_targets = min(n_targets, max_data_per_step)
-                data_batch = [(n, min(n + data_batch_size, n_targets)) for n in xrange(0, n_targets, data_batch_size)]
+                data_batch = [(n, min(n + data_batch_size, n_targets)) for n in range(0, n_targets, data_batch_size)]
                 f_batch = 0
                 gen = data_batch
                 if args.progress:
@@ -166,7 +166,7 @@ def main():
                 n_batch_trained += len(data_batch)
                 if n_step % _decay_lr_every == 0:
                     _lr = _lr_decay * _lr
-                    print('decayed lr:' + str(_lr))
+                    print(('decayed lr:' + str(_lr)))
                 if n_step % eval_every == 0:
                     recall_cold = utils.batch_eval_recall(
                         sess, dropout_net.eval_preds_cold, eval_feed_dict=dropout_net.get_eval_dict,
@@ -182,14 +182,14 @@ def main():
                     timer.toc('%d [%d]b [%d]tot f=%.2f best[%d]' % (
                         n_step, len(data_batch), n_batch_trained, f_batch, best_step
                     )).tic()
-                    print ('\t\t\t'+' '.join([('@'+str(i)).ljust(6) for i in recall_at]))
-                    print('cold start\t%s' % (
+                    print(('\t\t\t'+' '.join([('@'+str(i)).ljust(6) for i in recall_at])))
+                    print(('cold start\t%s' % (
                         ' '.join(['%.4f' % i for i in recall_cold]),
-                    ))
-                    print('best epoch[%d]\t%s' % (
+                    )))
+                    print(('best epoch[%d]\t%s' % (
                         best_step,
                         ' '.join(['%.4f' % i for i in best_cold] ),
-                    ))
+                    )))
                     summaries = []
                     for i, k in enumerate(recall_at):
                         if k % 100 == 0:
@@ -263,7 +263,7 @@ def load_data(data_path):
 
     # load split
     timer.tic()
-    train = pd.read_csv(train_file, delimiter=",", header=-1, dtype=np.int32).values.ravel().view(
+    train = pd.read_csv(train_file, delimiter=",", header=None, dtype=np.int32).values.ravel().view(
         dtype=[('uid', np.int32), ('iid', np.int32), ('inter', np.int32)])
     dat['user_indices'] = np.unique(train['uid'])
     timer.toc('read train triplets %s' % train.shape).tic()
@@ -295,8 +295,8 @@ if __name__ == "__main__":
     parser.add_argument('--lr', type=float, default=0.005, help='starting learning rate')
     parser.add_argument('--progress', action='store_true', help='show tqdm progress (requires tqdm) during training')
 
-    args = parser.parse_args()
-    args, _ = parser.parse_known_args()
+    args = parser.parse_args(['--data-dir', 'eval'])
+    args, _ = parser.parse_known_args(['--data-dir', 'eval'])
     for key in vars(args):
-        print(key + ":" + str(vars(args)[key]))
+        print((key + ":" + str(vars(args)[key])))
     main()
