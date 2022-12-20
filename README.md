@@ -14,6 +14,9 @@ This repository contains full implementation of the DropoutNet model and include
 
 Furthermore per request, we also provide scripts and all necessary data to run the Citeulike cold-start experiment. See section on Citeulike below for further details as well as links to the packaged data.
 
+**update** We now offer implementations on newer architectures! Simply navigate to the corresponding subdirectories:
+- [`tf1`: original TF1 implementation](tf1)
+- [`tf2`: TF2 using compat mode](tf2)
 
 <a name="env"/>
 
