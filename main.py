@@ -12,6 +12,7 @@ import os
 
 n_users = 1497020 + 1
 n_items = 1306054 + 1
+tf.compat.v1.disable_eager_execution()
 
 
 def main():
@@ -80,7 +81,7 @@ def main():
                                model_select=model_select,
                                rank_out=rank_out)
 
-    config = tf.ConfigProto(allow_soft_placement=True)
+    config = tf.compat.v1.ConfigProto(allow_soft_placement=True)
 
     with tf.device(args.model_device):
         dropout_net.build_model()
@@ -88,12 +89,12 @@ def main():
     with tf.device(args.inf_device):
         dropout_net.build_predictor(recall_at, n_scores_user)
 
-    with tf.Session(config=config) as sess:
-        tf_saver = None if _tf_ckpt_file is None else tf.train.Saver()
-        train_writer = None if tb_log_path is None else tf.summary.FileWriter(
+    with tf.compat.v1.Session(config=config) as sess:
+        tf_saver = None if _tf_ckpt_file is None else tf.compat.v1.train.Saver()
+        train_writer = None if tb_log_path is None else tf.compat.v1.summary.FileWriter(
             tb_log_path + experiment, sess.graph)
-        tf.global_variables_initializer().run()
-        tf.local_variables_initializer().run()
+        tf.compat.v1.global_variables_initializer().run()
+        tf.compat.v1.local_variables_initializer().run()
         timer.toc('initialized tf')
 
         row_index = np.copy(user_indices)
@@ -126,11 +127,11 @@ def main():
                 target_items = np.append(target_items, target_items_rand)
                 target_users = np.append(target_users, target_users)
 
-                tf.local_variables_initializer().run()
+                tf.compat.v1.local_variables_initializer().run()
                 n_targets = len(target_scores)
                 perm = np.random.permutation(n_targets)
                 n_targets = min(n_targets, max_data_per_step)
-                data_batch = [(n, min(n + data_batch_size, n_targets)) for n in xrange(0, n_targets, data_batch_size)]
+                data_batch = [(n, min(n + data_batch_size, n_targets)) for n in range(0, n_targets, data_batch_size)]
                 f_batch = 0
                 for (start, stop) in data_batch:
                     batch_perm = perm[start:stop]
@@ -205,13 +206,13 @@ def main():
                     for i, k in enumerate(recall_at):
                         if k % 100 == 0:
                             summaries.extend([
-                                tf.Summary.Value(tag="recall@" + str(k) + " warm", simple_value=recall_warm[i]),
-                                tf.Summary.Value(tag="recall@" + str(k) + " cold_user",
+                                tf.compat.v1.Summary.Value(tag="recall@" + str(k) + " warm", simple_value=recall_warm[i]),
+                                tf.compat.v1.Summary.Value(tag="recall@" + str(k) + " cold_user",
                                                  simple_value=recall_cold_user[i]),
-                                tf.Summary.Value(tag="recall@" + str(k) + " cold_item",
+                                tf.compat.v1.Summary.Value(tag="recall@" + str(k) + " cold_item",
                                                  simple_value=recall_cold_item[i])
                             ])
-                    recall_summary = tf.Summary(value=summaries)
+                    recall_summary = tf.compat.v1.Summary(value=summaries)
                     if train_writer is not None:
                         train_writer.add_summary(recall_summary, n_step)
 
@@ -258,7 +259,7 @@ def load_data(data_path):
 
     # load split
     timer.tic()
-    train = pd.read_csv(train_file, delimiter=",", header=-1, dtype=np.int32).values.ravel().view(
+    train = pd.read_csv(train_file, delimiter=",", header=None, dtype=np.int32).values.ravel().view(
         dtype=[('uid', np.int32), ('iid', np.int32), ('inter', np.int32), ('date', np.int32)])
     dat['user_indices'] = np.unique(train['uid'])
     timer.toc('read train triplets %s' % train.shape).tic()

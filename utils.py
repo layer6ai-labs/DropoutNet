@@ -139,7 +139,7 @@ def batch_eval_recall(_sess, tf_eval, eval_feed_dict, recall_k, eval_data):
                                       batch, eval_start, eval_stop, eval_data))
         tf_eval_preds_batch.append(tf_eval_preds)
     tf_eval_preds = np.concatenate(tf_eval_preds_batch)
-    tf.local_variables_initializer().run()
+    tf.compat.v1.local_variables_initializer().run()
 
     # filter non-zero targets
     y_nz = [len(x) > 0 for x in eval_data.R_test_inf.rows]
@@ -153,9 +153,11 @@ def batch_eval_recall(_sess, tf_eval, eval_feed_dict, recall_k, eval_data):
         y = eval_data.R_test_inf[y_nz, :]
 
         x = scipy.sparse.lil_matrix(y.shape)
-        x.rows = preds_k
-        x.data = np.ones_like(preds_k)
-
+#        x.rows = preds_k
+#        x.data = np.ones_like(preds_k)
+        x.data = np.array([z.tolist() for z in np.ones_like(preds_k)]+[[]])[:-1]
+        x.rows = np.array([z.tolist() for z in preds_k]+[[]])[:-1]
+        #import pdb; pdb.set_trace()
         z = y.multiply(x)
         recall.append(np.mean(np.divide((np.sum(z, 1)), np.sum(y, 1))))
     return recall
