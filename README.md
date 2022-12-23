@@ -16,7 +16,7 @@ Furthermore per request, we also provide scripts and all necessary data to run t
 
 **update** We now offer implementations on newer architectures! Simply navigate to the corresponding subdirectories:
 - [`tf1`: original TF1 implementation](tf1)
-- [`tf2`: TF2 using compat mode](tf2)
+- [`tf2`: TF2 using compat mode (recsys only)](tf2)
 - [`torch`: PyTorch (recsys only)](torch)
 
 <a name="env"/>
