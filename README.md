@@ -7,28 +7,17 @@
 Authors: [Maksims Volkovs](http://www.cs.toronto.edu/~mvolkovs), [Guangwei Yu](http://www.cs.toronto.edu/~guangweiyu), Tomi Poutanen  
 [[paper](http://www.cs.toronto.edu/~mvolkovs/nips2017_deepcf.pdf)]
 
+**UPDATE:** We added TensorFlow2 and PyTorch implimentations!
+- [`tf1`: original TF1 implementation](tf1)
+- [`tf2`: TF2 using compat mode (RecSys dataset only)](tf2)
+- [`torch`: PyTorch (RecSys dataset only)](torch)
+
 <a name="intro"/>
 
 ## Introduction
 This repository contains full implementation of the DropoutNet model and includes both training and evaluation routines. We also provide the [ACM RecSys 2017 Challenge](http://2017.recsyschallenge.com) dataset that we further split into three subsets for warm start, user cold start and item cold start evaluation. The aim is to train a *single* model that can be applied to all three tasks and we report validation accuracy on each task during training.
 
 Furthermore per request, we also provide scripts and all necessary data to run the Citeulike cold-start experiment. See section on Citeulike below for further details as well as links to the packaged data.
-
-**update** We now offer implementations on newer architectures! Simply navigate to the corresponding subdirectories:
-- [`tf1`: original TF1 implementation](tf1)
-- [`tf2`: TF2 using compat mode (recsys only)](tf2)
-- [`torch`: PyTorch (recsys only)](torch)
-
-<a name="env"/>
-
-## Environment
-The python code is developed and tested on the following environment:
-* python 2.7
-* tensorflow-gpu 1.3.0
-* Intel Xeon E5-2630
-* 128GB ram (around 30GB is required)
-* Titan X (Pascal) 12GB, driver ver. 384.81
-* CUDA 9 and CUDNN 7
 
 <a name="dataset"/>
 
