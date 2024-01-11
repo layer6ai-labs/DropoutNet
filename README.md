@@ -23,7 +23,7 @@ Furthermore per request, we also provide scripts and all necessary data to run t
 
 ## Dataset
 
-To run the model, download the dataset from [here](https://s3.amazonaws.com/public.layer6.ai/DropoutNet/recsys2017.pub.tar.gz).
+To run the model, download the dataset from [here](https://github.com/layer6ai-labs/DropoutNet-Data/blob/master/recsys2017.pub.tar.gz).
 With this dataset we have also included pre-trained Weighted 
 Factorization model (WMF)\[Hu et al., 2008\], that is used as preference input to the DropoutNet. WMF produces competitive performance on warm start but doesn't generalize to cold start. So this code demonstrates how to apply DropoutNet to provide cold start capability to WMF. The format of the data is as follows:
 ```
@@ -82,7 +82,7 @@ Notes:
 </p>
 
 ## Citeulike
-In addition to Recsys, we also provide pipeline to run the publicly available Citeulike data. Note that, as mentioned in the paper, we evaluate cold start the same way as the CTR paper while the warm start evaluation is modified. For convenience, we have proivded our evaluation split for both cold and warm start, item features, as well as the WMF user item preference latent vectors available [here](https://s3.amazonaws.com/public.layer6.ai/DropoutNet/citeu.tar.gz).
+In addition to Recsys, we also provide pipeline to run the publicly available Citeulike data. Note that, as mentioned in the paper, we evaluate cold start the same way as the CTR paper while the warm start evaluation is modified. For convenience, we have proivded our evaluation split for both cold and warm start, item features, as well as the WMF user item preference latent vectors available [here](https://github.com/layer6ai-labs/DropoutNet-Data/blob/master/citeu.tar.gz).
 
 The citeulike warm and cold models are trained separately as their validation sets differ. Please use the scripts
 `main_cold_citeu.py` and `main_warm_citeu.py` to run the experiments on the Citeulike dataset.
